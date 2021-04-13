@@ -5,7 +5,11 @@ import { Object3D,
 		 RGBFormat,
 		 CubeTextureLoader,
 		 CubeRefractionMapping,
-         Color} from 'three';
+         Color,
+         BoxGeometry,
+         MeshBasicMaterial,
+         Mesh,
+         MeshStandardMaterial} from 'three';
 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as CanvasSign from './CanvasSign.js';
@@ -81,7 +85,11 @@ function loadObjects()
 {     
 
     //  Create and add your Objects here
-        
+    var geometry = new BoxGeometry(100, 100, 100);
+    var material = new MeshBasicMaterial({color: 0x00ff00});
+    var cube = new Mesh(geometry, material);
+
+    environment.add(cube);        
 }
 
 function loadSigns(){

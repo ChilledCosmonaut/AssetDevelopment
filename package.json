@@ -13,7 +13,7 @@
   "author": "Mounsif Chetitah",
   "license": "ISC",
   "dependencies": {
-    "three": "^0.115.0"
+    "three": "^0.127.0"
   },
   "devDependencies": {
     "webpack": "^4.42.1",
