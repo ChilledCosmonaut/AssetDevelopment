@@ -1,0 +1,22 @@
+{
+  "name": "threeJsBoilerplate",
+  "version": "1.0.0",
+  "description": "This a ThreeJs boilerplate project to use to scaffold your walkabout project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "keywords": [
+    "threejs"
+  ],
+  "author": "Mounsif Chetitah",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.115.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  }
+}
