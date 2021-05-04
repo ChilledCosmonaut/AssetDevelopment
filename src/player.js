@@ -31,7 +31,7 @@ const loadPlayer = function ( scene )
     player = new Object3D();
     player.name = 'player';
     player.position.set(0,0,0);
-    scene.add( player );
+    //scene.add( player );
 
     playerLight = new DirectionalLight( 0xffffff );
     playerLight.position.set( 0, 200, 0 );
