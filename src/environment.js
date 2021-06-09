@@ -10,7 +10,12 @@ import { Object3D,
          MeshBasicMaterial,
          Mesh,
          MeshStandardMaterial,
-         Vector3} from 'three';
+         Vector3,
+         LOD,
+         AnimationMixer,
+         CatmullRomCurve3,
+         BufferGeometry,
+         LineBasicMaterial} from 'three';
 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as CanvasSign from './CanvasSign.js';
@@ -24,7 +29,11 @@ var basicMaterial = new MeshStandardMaterial({
     map: texLoader.load('floor_tiles.jpg')
 });
 var myObject = new Object3D();
-    
+var birdSpeed = 0.05;
+var birdProgress;
+var bird;
+var birdPath;
+var animationStartPosition = new Vector3(650, 0, -200);
 
 function buildEnvironment()
 {
@@ -40,7 +49,9 @@ const loadEnvironment = function ( scene )
     loadBackground( scene );
     //loadObjects();
     loadSigns();
-  
+    //loadFBXLODs();
+    //loadCurveAnimation();
+
     scene.add(environment);
 }
 
@@ -126,4 +137,95 @@ function loadSigns(){
     sign.loadSign(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 1));
 }
 
-export {loadEnvironment, updateEnvironment}
+function loadFBXLODs(){
+    var lod = new LOD();
+
+    var sphere_LOD0 = new Object3D();
+        sphere_LOD0.name = 'sphere_LOD0';
+
+    loader.load('assets/models/lods/Sphere_LOD0.fbx', function(obj){
+        sphere_LOD0.add(obj);
+    });
+
+    lod.addLevel(sphere_LOD0, 200);
+
+    var sphere_LOD1 = new Object3D();
+        sphere_LOD1.name = 'sphere_LOD0';
+
+    loader.load('assets/models/lods/Sphere_LOD1.fbx', function(obj){
+        sphere_LOD1.add(obj);
+    });
+
+    lod.addLevel(sphere_LOD1, 400);
+
+    var sphere_LOD2 = new Object3D();
+        sphere_LOD2.name = 'sphere_LOD0';
+
+    loader.load('assets/models/lods/Sphere_LOD2.fbx', function(obj){
+        sphere_LOD2.add(obj);
+    });
+
+    lod.addLevel(sphere_LOD2, 800);
+
+    lod.position.x = 0;
+    lod.position.y = 0;
+    lod.position.z = 0;
+
+    environment.add(lod)
+}
+
+function loadCurveAnimation() {
+    bird = new Object3D ();
+    bird.name = 'bird';
+    bird.scale.set(0.5, 0.5, 0.5);
+
+    loader.load('assets/models/Bird_Motions.fbx', function (obj) {
+        //creating mixer
+        obj.mixer = new AnimationMixer(obj);
+        mixers_environment.push(obj.mixer);
+        //setting animation actions
+        obj.mixer.clipAction(obj.animations[0]).play();
+        //fixing initial rotation
+        obj.rotation.z = 0.79 * Math.PI;
+
+        //adding object to scene
+        bird.add(obj);
+    });
+
+    environment.add(bird);
+
+    //path
+    let pathScale = 35;
+    birdPath = new CatmullRomCurve3([
+        new Vector3(10, 10, 0).multiplyScalar(pathScale),
+        new Vector3(0, 15, 5).multiplyScalar(pathScale),
+        new Vector3(-10, 10, -5).multiplyScalar(pathScale),
+        new Vector3(0, 8, 0).multiplyScalar(pathScale)
+    ], true);
+
+    //path visuals (optional)
+    let points = birdPath.getPoints(50);
+    let geometry = new BufferGeometry().setFromPoints(points);
+    let material = new LineBasicMaterial({ color: 0x00000000 });
+    let curveObject = new Line (geometry, material);
+    environment.add(curveObject);
+
+    //animation setup
+    curveObject.position.set(animationStartPosition.x, animationStartPosition.y, animationStartPosition.z)
+}
+
+function updateCurveAnimation(delta) {
+
+    //function curve progress
+    let step = birdProgress + birdSpeed * delta;
+    birdProgress = step < 1 ? step : 0; //reset
+
+    //update position
+    let pathEval = birdPath.getPoints(birdProgress);
+
+    let newPosition = pathEval.add(animationStartPosition);
+    bird.lookAt(newPosition.x, newPosition.y, newPosition.z);
+    bird.position.set(newPosition.x, newPosition.y, newPosition.z);
+}
+
+export {loadEnvironment, updateEnvironment, updateCurveAnimation };
