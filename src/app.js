@@ -23,7 +23,7 @@ const controls = buildControls();
 
 Player.loadPlayer( scene );
 Environment.loadEnvironment( scene );
-//Input.addEvents();
+Input.addEvents();
 
 animate();
 

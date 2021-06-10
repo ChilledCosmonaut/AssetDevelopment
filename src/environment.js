@@ -47,9 +47,9 @@ const loadEnvironment = function ( scene )
 
     loadGrid( scene );
     loadBackground( scene );
-    //loadObjects();
+    loadObjects();
     loadSigns();
-    //loadFBXLODs();
+    loadFBXLODs();
     //loadCurveAnimation();
 
     scene.add(environment);
@@ -110,7 +110,7 @@ function loadObjects()
     myObject.position.set(-250, 100, -250);
 
     //loading mesh data and assigning material
-    loader.load('Assets/models/Monkey.fbx', function ( object ) {
+    loader.load('Assets/models/SteelBeam.fbx', function ( object ) {
 
         object.traverse(function (child) {
             if( child instanceof Mesh ){
@@ -140,36 +140,36 @@ function loadSigns(){
 function loadFBXLODs(){
     var lod = new LOD();
 
-    var sphere_LOD0 = new Object3D();
-        sphere_LOD0.name = 'sphere_LOD0';
+    var mug_LOD0 = new Object3D();
+        mug_LOD0.name = 'mug_LOD0';
 
-    loader.load('assets/models/lods/Sphere_LOD0.fbx', function(obj){
-        sphere_LOD0.add(obj);
+    loader.load('assets/models/lods/Mug/CoffeeMug(LOD0).fbx', function(obj){
+        mug_LOD0.add(obj);
     });
 
-    lod.addLevel(sphere_LOD0, 200);
+    lod.addLevel(mug_LOD0, 500);
 
-    var sphere_LOD1 = new Object3D();
-        sphere_LOD1.name = 'sphere_LOD0';
+    var mug_LOD1 = new Object3D();
+        mug_LOD1.name = 'mug_LOD1';
 
-    loader.load('assets/models/lods/Sphere_LOD1.fbx', function(obj){
-        sphere_LOD1.add(obj);
+    loader.load('assets/models/lods/Mug/CoffeeMug(LOD1).fbx', function(obj){
+        mug_LOD1.add(obj);
     });
 
-    lod.addLevel(sphere_LOD1, 400);
+    lod.addLevel(mug_LOD1, 1000);
 
-    var sphere_LOD2 = new Object3D();
-        sphere_LOD2.name = 'sphere_LOD0';
+    var mug_LOD2 = new Object3D();
+        mug_LOD2.name = 'mug_LOD2';
 
-    loader.load('assets/models/lods/Sphere_LOD2.fbx', function(obj){
-        sphere_LOD2.add(obj);
+    loader.load('assets/models/lods/Mug/CoffeeMug(LOD2).fbx', function(obj){
+        mug_LOD2.add(obj);
     });
 
-    lod.addLevel(sphere_LOD2, 800);
+    lod.addLevel(mug_LOD2, 1500);
 
-    lod.position.x = 0;
+    lod.position.x = 200;
     lod.position.y = 0;
-    lod.position.z = 0;
+    lod.position.z = 200;
 
     environment.add(lod)
 }
