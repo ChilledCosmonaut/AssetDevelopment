@@ -15,7 +15,8 @@ import { Object3D,
          AnimationMixer,
          CatmullRomCurve3,
          BufferGeometry,
-         LineBasicMaterial} from 'three';
+         LineBasicMaterial,
+         Vector2} from 'three';
 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as CanvasSign from './CanvasSign.js';
@@ -27,6 +28,21 @@ const environment = buildEnvironment();
 var mixers_environment = [];
 var basicMaterial = new MeshStandardMaterial({
     map: texLoader.load('floor_tiles.jpg')
+});
+var SteelBeamMaterial = new MeshStandardMaterial ({
+    map: texLoader.load('SteelBeam/RustyMetalBaseColor.png'),
+    normalMap: texLoader.load('Assets/textures/RustyMetalNormal.png'),
+    normalScale: new Vector2(1, 1),
+    roughness: 1,
+    roughnessMap: texLoader.load('Assets/textures/RustyMetalRoughness.png'),
+    displacementMap: texLoader.load('Assets/textures/RustyMetalDisplacement.png'),
+    specularMap: texLoader.load('Assets/textures/RustyMetalSpecular.png')
+})
+var mugMaterial = new MeshStandardMaterial({
+    map: texLoader.load('Mug/PorcelainBase.png'),
+    normalScale: new Vector2(1, 1),
+    roughness: 1,
+    roughnessMap: texLoader.load('Mug/PorcelainBase.png'),
 });
 var myObject = new Object3D();
 var birdSpeed = 0.05;
@@ -114,7 +130,7 @@ function loadObjects()
 
         object.traverse(function (child) {
             if( child instanceof Mesh ){
-                child.material = basicMaterial;
+                child.material = SteelBeamMaterial;
                 child.receiveShadow = true;
                 child.castShadow = true;
             }
@@ -166,6 +182,8 @@ function loadFBXLODs(){
     });
 
     lod.addLevel(mug_LOD2, 1500);
+
+    lod.a
 
     lod.position.x = 200;
     lod.position.y = 0;
