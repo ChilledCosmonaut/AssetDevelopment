@@ -16,10 +16,12 @@ import { Object3D,
          CatmullRomCurve3,
          BufferGeometry,
          LineBasicMaterial,
-         Vector2} from 'three';
+         Vector2,
+         Line} from 'three';
 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import * as CanvasSign from './CanvasSign.js';
+import * as Grid from './procedural/grid.js';
 
 const loader = new FBXLoader();
 const texLoader = new TextureLoader().setPath('Assets/textures/');
@@ -45,10 +47,10 @@ var mugMaterial = new MeshStandardMaterial({
     roughnessMap: texLoader.load('Mug/PorcelainBase.png'),
 });
 var myObject = new Object3D();
-var birdSpeed = 0.05;
-var birdProgress;
-var bird;
-var birdPath;
+var transportShipSpeed = 0.05;
+var transportShipProgress;
+var transportShip;
+var transportShipPath;
 var animationStartPosition = new Vector3(650, 0, -200);
 
 function buildEnvironment()
@@ -66,7 +68,8 @@ const loadEnvironment = function ( scene )
     loadObjects();
     loadSigns();
     loadFBXLODs();
-    //loadCurveAnimation();
+    loadCurveAnimation();
+    loadTileGrid();
 
     scene.add(environment);
 }
@@ -90,7 +93,7 @@ function loadGrid( scene ) {
 
 function loadBackground( scene ) {
 
-    const path = "Assets/textures/cubemaps/approaching_storm/";
+    const path = "assets/textures/cubemaps/approaching_storm/";
     const format = '.jpg';
     const urls = [
         path + 'px' + format, path + 'nx' + format,
@@ -118,15 +121,15 @@ function loadObjects()
 {     
 
     //  Create and add your Objects here
-    var geometry = new BoxGeometry(100, 100, 100);
+    //var geometry = new BoxGeometry(100, 100, 100);
     //var material = new MeshBasicMaterial( {color: 0x00ff00} );
-    var cube = new Mesh(geometry, basicMaterial);
+    //var cube = new Mesh(geometry, basicMaterial);
 
     myObject.name = 'name';
     myObject.position.set(-250, 100, -250);
 
     //loading mesh data and assigning material
-    loader.load('Assets/models/SteelBeam.fbx', function ( object ) {
+    loader.load('assets/models/SteelBeam.fbx', function ( object ) {
 
         object.traverse(function (child) {
             if( child instanceof Mesh ){
@@ -140,7 +143,28 @@ function loadObjects()
     
     environment.add(myObject);
 
-    environment.add(cube);        
+    //environment.add(cube); 
+    
+    var transportShip = new Object3D;
+
+    transportShip.name = 'Transporter';
+    transportShip.position.set(250, 100, 250);
+    transportShip.scale.set(2,2,2);
+
+    //loading mesh data and assigning material
+    loader.load('assets/models/TransportShip.fbx', function ( object ) {
+
+        object.traverse(function (child) {
+            if( child instanceof Mesh ){
+                child.material = basicMaterial;
+                child.receiveShadow = true;
+                child.castShadow = true;
+            }
+        });
+        myObject.add(object);
+    });
+    
+    environment.add(transportShip);
 }
 
 function loadSigns(){
@@ -193,9 +217,9 @@ function loadFBXLODs(){
 }
 
 function loadCurveAnimation() {
-    bird = new Object3D ();
-    bird.name = 'bird';
-    bird.scale.set(0.5, 0.5, 0.5);
+    transportShip = new Object3D ();
+    transportShip.name = 'transport';
+    transportShip.scale.set(0.5, 0.5, 0.5);
 
     loader.load('assets/models/Bird_Motions.fbx', function (obj) {
         //creating mixer
@@ -207,14 +231,14 @@ function loadCurveAnimation() {
         obj.rotation.z = 0.79 * Math.PI;
 
         //adding object to scene
-        bird.add(obj);
+        transportShip.add(obj);
     });
 
-    environment.add(bird);
+    environment.add(transportShip);
 
     //path
     let pathScale = 35;
-    birdPath = new CatmullRomCurve3([
+    transportShipPath = new CatmullRomCurve3([
         new Vector3(10, 10, 0).multiplyScalar(pathScale),
         new Vector3(0, 15, 5).multiplyScalar(pathScale),
         new Vector3(-10, 10, -5).multiplyScalar(pathScale),
@@ -222,10 +246,10 @@ function loadCurveAnimation() {
     ], true);
 
     //path visuals (optional)
-    let points = birdPath.getPoints(50);
+    let points = transportShipPath.getPoints(50);
     let geometry = new BufferGeometry().setFromPoints(points);
     let material = new LineBasicMaterial({ color: 0x00000000 });
-    let curveObject = new Line (geometry, material);
+    let curveObject = new Line(geometry, material);
     environment.add(curveObject);
 
     //animation setup
@@ -235,15 +259,23 @@ function loadCurveAnimation() {
 function updateCurveAnimation(delta) {
 
     //function curve progress
-    let step = birdProgress + birdSpeed * delta;
-    birdProgress = step < 1 ? step : 0; //reset
+    let step = transportShipProgress + transportShipSpeed * delta;
+    transportShipProgress = step < 1 ? step : 0; //reset
 
     //update position
-    let pathEval = birdPath.getPoints(birdProgress);
+    let pathEval = transportShipPath.getPoint(transportShipProgress);
 
     let newPosition = pathEval.add(animationStartPosition);
-    bird.lookAt(newPosition.x, newPosition.y, newPosition.z);
-    bird.position.set(newPosition.x, newPosition.y, newPosition.z);
+    transportShip.lookAt(newPosition.x, newPosition.y, newPosition.z);
+    transportShip.position.set(newPosition.x, newPosition.y, newPosition.z);
+}
+
+function loadTileGrid() {
+    let myGrid = new Grid.gridGenerator(25, 25, 100);
+    myGrid.init();
+    myGrid.createVisuals();
+    myGrid.sceneObject.position.set(0, 0, 0);
+    environment.add(myGrid.sceneObject);
 }
 
 export {loadEnvironment, updateEnvironment, updateCurveAnimation };
