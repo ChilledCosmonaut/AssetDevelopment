@@ -184,6 +184,13 @@ function loadFBXLODs(){
         mug_LOD0.name = 'mug_LOD0';
 
     loader.load('assets/models/lods/Mug/CoffeeMug(LOD0).fbx', function(obj){
+        obj.traverse(function (child) {
+            if( child instanceof Mesh ){
+                child.material = mugMaterial;
+                child.receiveShadow = true;
+                child.castShadow = true;
+            }
+        });
         mug_LOD0.add(obj);
     });
 
@@ -193,6 +200,13 @@ function loadFBXLODs(){
         mug_LOD1.name = 'mug_LOD1';
 
     loader.load('assets/models/lods/Mug/CoffeeMug(LOD1).fbx', function(obj){
+        obj.traverse(function (child) {
+            if( child instanceof Mesh ){
+                child.material = mugMaterial;
+                child.receiveShadow = true;
+                child.castShadow = true;
+            }
+        });
         mug_LOD1.add(obj);
     });
 
@@ -202,6 +216,13 @@ function loadFBXLODs(){
         mug_LOD2.name = 'mug_LOD2';
 
     loader.load('assets/models/lods/Mug/CoffeeMug(LOD2).fbx', function(obj){
+        obj.traverse(function (child) {
+            if( child instanceof Mesh ){
+                child.material = mugMaterial;
+                child.receiveShadow = true;
+                child.castShadow = true;
+            }
+        });
         mug_LOD2.add(obj);
     });
 
