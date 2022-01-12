@@ -1,14 +1,6 @@
-# ThreeJsBoilerplate - Asset Development
+# Asset Development Showcase
 
-## Table of contents
-* [General info](#general-info)
-* [Technologies](#technologies)
-* [Setup](#setup)
-
-## General info 
-This project is a ThreeJs Boilerplate for Asset Development students. Students will have to clone this repository to their machines, build it an access it through the web browser. 
-
-This project provides the students a good foundation on which they will build a rich and fun Walkabout. 
+A small scene realised by utilizing tools and linraries like Blender, Three.js etc.
 
 ## Technologies
 Project is created with:
@@ -42,9 +34,3 @@ Then serve::
 ```
 serve path/to/threeJsBoilerplate
 ````
-
-## Miscellaneous
-Some useful links you may need in your project.
-
-* https://www.turbosquid.com/
-* https://sketchfab.com/
